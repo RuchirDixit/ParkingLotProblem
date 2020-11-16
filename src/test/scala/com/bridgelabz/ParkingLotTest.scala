@@ -5,7 +5,7 @@ import org.scalatest.FunSuite
 class ParkingLotTest extends FunSuite
 {
 
-  // UC1
+  // UC1 : To Park car
   test("givenAVehicleWhenParkedShouldReturnTrue"){
     val parkingLot = new ParkingLotSystem()
     val isParked = parkingLot.park(new Object)
