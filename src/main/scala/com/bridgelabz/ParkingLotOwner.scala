@@ -11,4 +11,3 @@ class ParkingLotOwner extends ParkingLotObserver {
     isFullCapacity
   }
 }
-
