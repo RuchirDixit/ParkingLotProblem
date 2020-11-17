@@ -31,15 +31,19 @@ class ParkingLotSystem(parkingLotCapacity:Int)
    * @return : Boolean value if parked then true, else false
    */
     @throws(classOf[ParkingLotException])
-  def park(vehicle : Object): Unit = {
-    if(this.vehicles.size == totalCapacity) {
-      observers.foreach(observer => observer.capacityIsFull())
-      throw new ParkingLotException("Parking Lot Full")
-      }
+  def park(vehicle : Object): Unit =
+    {
       if(isVehicleParked(vehicle)) {
         throw new ParkingLotException("Vehicle already parked")
       }
+      if(this.vehicles.size == totalCapacity) {
+        observers.foreach(observer => observer.capacityIsFull())
+        throw new ParkingLotException("Parking Lot Full")
+      }
       this.vehicles += vehicle
+      if(this.vehicles.size == totalCapacity) {
+        observers.foreach(observer => observer.capacityIsFull())
+      }
   }
 
   /**
@@ -62,6 +66,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
     if(this.vehicles.contains(vehicle))
     {
       this.vehicles -= vehicle
+      observers.foreach(observer => observer.capacityIsAvailable())
       return true
     }
     false
