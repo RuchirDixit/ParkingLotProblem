@@ -13,7 +13,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
    *
    * @param capacity : Set total capacity of parking lot
    */
-  def setCapacity(capacity: Int): Unit = {
+  def setCapacity(capacity: Int): Unit ={
     this.totalCapacity = capacity
   }
 
