@@ -53,7 +53,7 @@ class ParkingLotTest extends FunSuite
   test("givenWhenParkingLotIsFullShouldInformOwner"){
     val owner = new ParkingLotOwner()
     val parkingLot = new ParkingLotSystem(1)
-    parkingLot.registerOwner(owner)
+    parkingLot.registerParkingLotObserver(owner)
     try{
       val vehicle = new Object()
       parkingLot.park(vehicle)
@@ -86,5 +86,23 @@ class ParkingLotTest extends FunSuite
         println(ex.getMessage())
       }
     }
+  }
+  // UC4: Inform Airport security
+  test("givenWhenParkingLotIsFullShouldInformAirportSecurity"){
+    val airport = new AirportSecurity()
+    val parkingLot = new ParkingLotSystem(1)
+    parkingLot.registerParkingLotObserver(airport)
+    try{
+      val vehicle = new Object()
+      parkingLot.park(vehicle)
+      parkingLot.park(new Object())
+    }
+    catch {
+      case ex : ParkingLotException => {
+        println(ex.getMessage())
+      }
+    }
+    val isCapacityFull = airport.isCapacityFull()
+    assert(isCapacityFull == true)
   }
 }
