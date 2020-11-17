@@ -1,6 +1,6 @@
 package com.bridgelabz
 
-class ParkingLotOwner extends ParkingLotObserver {
+class AirportSecurity extends ParkingLotObserver {
   var isFullCapacity = false
   // Sets full capacity to true is capacity of parking lot is full
   def capacityIsFull(): Unit = {
@@ -11,4 +11,3 @@ class ParkingLotOwner extends ParkingLotObserver {
     isFullCapacity
   }
 }
-
