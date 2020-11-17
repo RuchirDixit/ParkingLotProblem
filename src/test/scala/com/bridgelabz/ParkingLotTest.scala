@@ -8,7 +8,7 @@ class ParkingLotTest extends FunSuite
   // UC1 : To Park car
   test("givenAVehicleWhenParkedShouldReturnTrue"){
     try {
-      val parkingLot = new ParkingLotSystem()
+      val parkingLot = new ParkingLotSystem(1)
       val vehicle = new Object()
       parkingLot.park(vehicle)
       val isParked = parkingLot.isVehicleParked(vehicle)
@@ -24,7 +24,7 @@ class ParkingLotTest extends FunSuite
  // UC2 : To unPark
   test("givenVehicleWhenUnParkedShouldReturnTrue") {
     try {
-      val parkingLot = new ParkingLotSystem()
+      val parkingLot = new ParkingLotSystem(1)
       val vehicle = new Object()
       parkingLot.park(vehicle)
       val isUnParked = parkingLot.unPark(vehicle)
@@ -38,13 +38,52 @@ class ParkingLotTest extends FunSuite
   // To check id car is already parked throw exception
   test("givenAVehicleWhenAlreadyParkedShouldReturnFalse"){
     try {
-      val parkingLot = new ParkingLotSystem()
+      val parkingLot = new ParkingLotSystem(1)
       val vehicle = new Object()
       parkingLot.park(vehicle)
     }
     catch {
       case parkingLotException : ParkingLotException => {
         assert(parkingLotException.getMessage.equals("Parking Lot Full"))
+      }
+    }
+  }
+
+  // UC3 : Inform owner on parking lot full
+  test("givenWhenParkingLotIsFullShouldInformOwner"){
+    val owner = new ParkingLotOwner()
+    val parkingLot = new ParkingLotSystem(1)
+    parkingLot.registerOwner(owner)
+    try{
+      val vehicle = new Object()
+      parkingLot.park(vehicle)
+      parkingLot.park(new Object())
+    }
+    catch {
+      case ex : ParkingLotException => {
+        println(ex.getMessage())
+      }
+    }
+    val capacity = owner.isCapacityFull()
+    assert(capacity == true)
+  }
+
+  test("givenCapacityIsT2ShouldBeAbleToParkTwoVehicles"){
+    val parkingLot = new ParkingLotSystem(1)
+    parkingLot.setCapacity(2)
+    try
+      {
+      val vehicle = new Object()
+        val vehicle2 = new Object()
+      parkingLot.park(vehicle)
+      parkingLot.park(vehicle2)
+        val isParked1 = parkingLot.isVehicleParked(vehicle)
+        val isParked2 = parkingLot.isVehicleParked(vehicle2)
+        assert(isParked1 == true && isParked2 == true)
+    }
+    catch {
+      case ex : ParkingLotException => {
+        println(ex.getMessage())
       }
     }
   }
