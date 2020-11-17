@@ -1,9 +1,29 @@
 package com.bridgelabz
 
-class ParkingLotSystem
+import scala.collection.mutable.ListBuffer
+// Parking Lot class to handle park and unPark
+class ParkingLotSystem(parkingLotCapacity:Int)
 {
+  // ListBuffer to store vehicles in parking lot
+  var vehicles = new ListBuffer[Object]
+  var owner : ParkingLotOwner = null
+  var totalCapacity = parkingLotCapacity
 
-  var vehicle : Object = ""
+  /**
+   *
+   * @param capacity : Set total capacity of parking lot
+   */
+  def setCapacity(capacity: Int): Unit ={
+    this.totalCapacity = capacity
+  }
+
+  /**
+   *
+   * @param owner : To register as a parking lot owner
+   */
+  def registerOwner(owner: ParkingLotOwner) = {
+    this.owner = owner
+  }
   /**
    *
    * @param vehicle : Vehicle to park
@@ -11,13 +31,23 @@ class ParkingLotSystem
    */
     @throws(classOf[ParkingLotException])
   def park(vehicle : Object): Unit = {
-    if(this.vehicle != null){
+    if(this.vehicles.size == totalCapacity) {
+      owner.capacityIsFull()
       throw new ParkingLotException("Parking Lot Full")
-    }
-    this.vehicle = vehicle
+      }
+      if(isVehicleParked(vehicle)) {
+        throw new ParkingLotException("Vehicle already parked")
+      }
+      this.vehicles += vehicle
   }
+
+  /**
+   *
+   * @param vehicle : Vehicle to be parked
+   * @return : True if vehicle is already parked, else returns false
+   */
   def isVehicleParked(vehicle: Object): Boolean = {
-    if(this.vehicle.equals(vehicle)) return true
+    if(this.vehicles.contains(vehicle)) return true
     false
   }
 
@@ -28,12 +58,11 @@ class ParkingLotSystem
    */
   def unPark(vehicle : Object) : Boolean = {
     if(vehicle == null) return false
-    if(this.vehicle.equals(vehicle))
+    if(this.vehicles.contains(vehicle))
     {
-      this.vehicle = null
+      this.vehicles -= vehicle
       return true
     }
     false
   }
-
 }
