@@ -6,7 +6,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
 {
   // ListBuffer to store vehicles in parking lot
   var vehicles = new ListBuffer[Object]
-  var owner : ParkingLotOwner = null
+  var observers = new ListBuffer[ParkingLotObserver]
   var totalCapacity = parkingLotCapacity
 
   /**
@@ -19,11 +19,12 @@ class ParkingLotSystem(parkingLotCapacity:Int)
 
   /**
    *
-   * @param owner : To register as a parking lot owner
+   * @param observer: To register as an observer
    */
-  def registerOwner(owner: ParkingLotOwner) = {
-    this.owner = owner
+  def registerParkingLotObserver(observer: ParkingLotObserver) = {
+    this.observers += observer
   }
+
   /**
    *
    * @param vehicle : Vehicle to park
@@ -32,7 +33,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
     @throws(classOf[ParkingLotException])
   def park(vehicle : Object): Unit = {
     if(this.vehicles.size == totalCapacity) {
-      owner.capacityIsFull()
+      observers.foreach(observer => observer.capacityIsFull())
       throw new ParkingLotException("Parking Lot Full")
       }
       if(isVehicleParked(vehicle)) {
