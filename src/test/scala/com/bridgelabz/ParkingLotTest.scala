@@ -105,4 +105,19 @@ class ParkingLotTest extends FunSuite
     val isCapacityFull = airport.isCapacityFull()
     assert(isCapacityFull == true)
   }
+
+  // UC5
+  test("givenWhenParkingLotSpaceAvailableAfterFullShouldReturnTrue"){
+    val owner = new ParkingLotOwner()
+    val parkingLot = new ParkingLotSystem(1)
+    parkingLot.registerParkingLotObserver(owner)
+    parkingLot.setCapacity(2)
+    val vehicle = new Object()
+    val vehicle2 = new Object()
+    parkingLot.park(vehicle)
+    parkingLot.park(vehicle2)
+    parkingLot.unPark(vehicle)
+    val capacity = owner.isCapacityFull()
+    assert(capacity == false)
+  }
 }
