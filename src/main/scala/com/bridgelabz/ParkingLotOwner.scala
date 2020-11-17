@@ -6,6 +6,10 @@ class ParkingLotOwner extends ParkingLotObserver {
   def capacityIsFull(): Unit = {
     isFullCapacity = true
   }
+  // sets full capacity to false when car unparked
+  override def capacityIsAvailable(): Unit = {
+    isFullCapacity = false
+  }
   // returns whether capacity of parking lot is full ot not
   def isCapacityFull(): Boolean = {
     isFullCapacity
