@@ -1,5 +1,8 @@
 package com.bridgelabz
 
+import java.text.SimpleDateFormat
+import java.util.Calendar
+
 import scala.collection.mutable.ListBuffer
 // Parking Lot class to handle park and unPark
 class ParkingLotSystem(parkingLotCapacity:Int)
@@ -8,6 +11,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
   var vehicles = new ListBuffer[Object]
   var observers = new ListBuffer[ParkingLotObserver]
   var totalCapacity = parkingLotCapacity
+  var timingOfParking = ""
 
   /**
    *
@@ -38,19 +42,37 @@ class ParkingLotSystem(parkingLotCapacity:Int)
     @throws(classOf[ParkingLotException])
   def park(vehicle : Object): Unit =
     {
-      if(isVehicleParked(vehicle)) {
-        throw new ParkingLotException("Vehicle already parked")
+      try {
+        getTimeOfPark()
+        if (isVehicleParked(vehicle)) {
+          throw new ParkingLotException("Vehicle already parked")
+        }
+        if (this.vehicles.size == totalCapacity) {
+          observers.foreach(observer => observer.capacityIsFull())
+          throw new ParkingLotException("Parking Lot Full")
+        }
+        this.vehicles += vehicle
+        if (this.vehicles.size == totalCapacity) {
+          observers.foreach(observer => observer.capacityIsFull())
+        }
       }
-      if(this.vehicles.size == totalCapacity) {
-        observers.foreach(observer => observer.capacityIsFull())
-        throw new ParkingLotException("Parking Lot Full")
-      }
-      this.vehicles += vehicle
-      if(this.vehicles.size == totalCapacity) {
-        observers.foreach(observer => observer.capacityIsFull())
-      }
+        catch {
+          case _: ParkingLotException => {
+            println("Parking Lot Full")
+          }
+          case ex: Exception => {
+            println(ex.getMessage())
+          }
+        }
   }
-
+  def getTimeOfPark() : Unit = {
+    val calender = Calendar.getInstance();
+    val hour = new SimpleDateFormat("hh");
+    val hours = hour.format(calender.getTime());
+    val min = new SimpleDateFormat("mm");
+    val minutes = min.format(calender.getTime());
+    timingOfParking = hour + "" + minutes
+  }
   /**
    *
    * @param vehicle : Vehicle to be parked
@@ -67,13 +89,25 @@ class ParkingLotSystem(parkingLotCapacity:Int)
    * @return : return true if vehicle unparked, else false
    */
   def unPark(vehicle : Object) : Boolean = {
-    if(vehicle == null) return false
-    if(this.vehicles.contains(vehicle))
-    {
-      this.vehicles -= vehicle
-      observers.foreach(observer => observer.capacityIsAvailable())
-      return true
+    try{
+      if(vehicle == null) return false
+      if(this.vehicles.contains(vehicle))
+      {
+        this.vehicles -= vehicle
+        observers.foreach(observer => observer.capacityIsAvailable())
+        return true
+      }
+      false
     }
-    false
+    catch {
+      case _: ParkingLotException => {
+        println("Parking Lot Full")
+        false
+      }
+      case ex: Exception => {
+        println(ex.getMessage())
+        false
+      }
+    }
   }
 }
