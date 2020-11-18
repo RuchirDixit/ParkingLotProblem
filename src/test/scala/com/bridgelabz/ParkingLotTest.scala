@@ -120,4 +120,21 @@ class ParkingLotTest extends FunSuite
     val capacity = owner.isCapacityFull()
     assert(capacity == false)
   }
+
+  // UC6 : If Parking Lot empty should park wherever possible
+  test("givenAnEmptyParkingLotWhenAskedWhereToParkShouldReturnTrue"){
+    val parkingLot = new ParkingLotSystem(2)
+    val status =  parkingLot.parkAtSlot(1)
+    assert(status == true)
+  }
+  // If asked to park at place where already vehicle parked
+  test("givenParkingLotWhenAskedWhereToParkAndIfAlreadyParkingFullOrParkedShouldReturnFalse"){
+    val parkingLot = new ParkingLotSystem(2)
+    val vehicle = new Object()
+    val vehicle2 = new Object()
+    parkingLot.park(vehicle)
+    parkingLot.park(vehicle2)
+    val status =  parkingLot.parkAtSlot(1)
+    assert(status == false)
+  }
 }
