@@ -153,4 +153,11 @@ class ParkingLotTest extends FunSuite
     val vehicleFound = parkingLot.isVehicleParked(new Object())
     assert(vehicleFound == false)
   }
+  // UC8
+  test("givenVehicleWhenParkedShouldReturnTime"){
+    val parkingLot = new ParkingLotSystem(2)
+    val vehicle = new Object()
+    parkingLot.park(vehicle)
+    assert(parkingLot.timingOfParking != "")
+  }
 }
