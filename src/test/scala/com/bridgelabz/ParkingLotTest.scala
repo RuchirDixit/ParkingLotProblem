@@ -137,4 +137,20 @@ class ParkingLotTest extends FunSuite
     val status =  parkingLot.parkAtSlot(1)
     assert(status == false)
   }
+  // UC7 : Find vehicle
+  test("givenVehicleIfFoundShouldReturnTrue"){
+    val parkingLot = new ParkingLotSystem(2)
+    val vehicle = new Object()
+    parkingLot.park(vehicle)
+    val vehicleFound = parkingLot.isVehicleParked(vehicle)
+    assert(vehicleFound == true)
+  }
+  // If vehicle not found
+  test("givenVehicleIfNotFoundShouldReturnFalse"){
+    val parkingLot = new ParkingLotSystem(2)
+    val vehicle = new Object()
+    parkingLot.park(vehicle)
+    val vehicleFound = parkingLot.isVehicleParked(new Object())
+    assert(vehicleFound == false)
+  }
 }
