@@ -25,6 +25,11 @@ class ParkingLotSystem(parkingLotCapacity:Int)
     this.observers += observer
   }
 
+  def parkAtSlot(slotNumber: Int): Boolean = {
+    if(slotNumber > totalCapacity)  false
+    else if(this.vehicles.size >= slotNumber) false
+    else true
+  }
   /**
    *
    * @param vehicle : Vehicle to park
