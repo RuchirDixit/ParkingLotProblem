@@ -5,14 +5,14 @@ import java.util.Calendar
 
 import scala.collection.mutable.ListBuffer
 // Parking Lot class to handle park and unPark
-class ParkingLotSystem(parkingLotCapacity:Int)
+class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
 {
   // ListBuffer to store vehicles in parking lot
   var vehicles = new ListBuffer[Object]
   var observers = new ListBuffer[ParkingLotObserver]
   var totalCapacity = parkingLotCapacity
   var timingOfParking = ""
-
+  var parkingLotArray = Array.ofDim[Object](parkingLot,totalCapacity)
   /**
    *
    * @param capacity : Set total capacity of parking lot
@@ -31,7 +31,7 @@ class ParkingLotSystem(parkingLotCapacity:Int)
 
   def parkAtSlot(slotNumber: Int): Boolean = {
     if(slotNumber > totalCapacity)  false
-    else if(this.vehicles.size >= slotNumber) false
+    else if(this.parkingLotArray.size >= slotNumber) false
     else true
   }
   /**
@@ -40,28 +40,57 @@ class ParkingLotSystem(parkingLotCapacity:Int)
    * @return : Boolean value if parked then true, else false
    */
     @throws(classOf[ParkingLotException])
-  def park(vehicle : Object): Unit =
+  def park(vehicle : Object): Boolean =
     {
       try {
         getTimeOfPark()
         if (isVehicleParked(vehicle)) {
           throw new ParkingLotException("Vehicle already parked")
         }
-        if (this.vehicles.size == totalCapacity) {
+        if(parkingLotArray.size == parkingLot*totalCapacity)
+        {
           observers.foreach(observer => observer.capacityIsFull())
           throw new ParkingLotException("Parking Lot Full")
         }
-        this.vehicles += vehicle
-        if (this.vehicles.size == totalCapacity) {
-          observers.foreach(observer => observer.capacityIsFull())
+        if(parkingLot == 0){
+          for(capacity <- 0 to totalCapacity-1)
+          {
+            if(parkingLotArray(capacity) != null) {
+              parkingLotArray(0)(capacity) = vehicle
+              return true
+            }
+          }
+          return false
         }
+        else {
+          for(lot <- 0 to parkingLot-1){
+            for(capacity <- 0 to totalCapacity-1){
+              if(parkingLotArray(lot)(capacity)==null){
+                parkingLotArray(lot)(capacity) = vehicle
+                return true
+              }
+              else{
+                if(lot+1 <= parkingLot-1){
+                  if(parkingLotArray(lot+1)(capacity)==null){
+                    parkingLotArray(lot)(capacity) = vehicle
+                    return true
+                  }
+                }
+              }
+              }
+            }
+          return false
+          }
+        false
       }
         catch {
           case _: ParkingLotException => {
             println("Parking Lot Full")
+            false
           }
           case ex: Exception => {
             println(ex.getMessage())
+            false
           }
         }
   }
@@ -79,7 +108,14 @@ class ParkingLotSystem(parkingLotCapacity:Int)
    * @return : True if vehicle is already parked, else returns false
    */
   def isVehicleParked(vehicle: Object): Boolean = {
-    if(this.vehicles.contains(vehicle)) return true
+    for(lot <- 0 until parkingLot){
+      for(capacity <- 0 until totalCapacity){
+        if(vehicle.equals(parkingLotArray(lot)(capacity))){
+          return true
+        }
+      }
+    }
+    //if(this.vehicles.contains(vehicle)) return true
     false
   }
 
