@@ -40,7 +40,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
    * @return : Boolean value if parked then true, else false
    */
     @throws(classOf[ParkingLotException])
-  def park(vehicle : Object): Boolean =
+  def park(vehicle : Object,driverType: String): Boolean =
     {
       try {
         getTimeOfPark()
@@ -63,22 +63,35 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
           return false
         }
         else {
-          for(lot <- 0 to parkingLot-1){
-            for(capacity <- 0 to totalCapacity-1){
-              if(parkingLotArray(lot)(capacity)==null){
-                parkingLotArray(lot)(capacity) = vehicle
-                return true
-              }
-              else{
-                if(lot+1 <= parkingLot-1){
-                  if(parkingLotArray(lot+1)(capacity)==null){
-                    parkingLotArray(lot)(capacity) = vehicle
-                    return true
+          if(driverType.equals("normal"))
+          {
+            for(lot <- 0 to parkingLot-1){
+              for(capacity <- 0 to totalCapacity-1){
+                if(parkingLotArray(lot)(capacity)==null){
+                  parkingLotArray(lot)(capacity) = vehicle
+                  return true
+                }
+                else{
+                  if(lot+1 <= parkingLot-1){
+                    if(parkingLotArray(lot+1)(capacity)==null){
+                      parkingLotArray(lot)(capacity) = vehicle
+                      return true
+                    }
                   }
                 }
               }
+            }
+          }
+          else {
+            for (lot <- 0 to parkingLot - 1) {
+              for (capacity <- 0 to totalCapacity - 1) {
+                if (parkingLotArray(lot)(capacity) == null) {
+                  parkingLotArray(lot)(capacity) = vehicle
+                  return true
+                }
               }
             }
+          }
           return false
           }
         false
@@ -115,7 +128,6 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
         }
       }
     }
-    //if(this.vehicles.contains(vehicle)) return true
     false
   }
 
@@ -127,12 +139,34 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
   def unPark(vehicle : Object) : Boolean = {
     try{
       if(vehicle == null) return false
-      if(this.vehicles.contains(vehicle))
-      {
-        this.vehicles -= vehicle
-        observers.foreach(observer => observer.capacityIsAvailable())
-        return true
+      if(parkingLot == 0){
+        for(capacity <- 0 to totalCapacity-1)
+        {
+          if(parkingLotArray(capacity) != null) {
+            parkingLotArray(0)(capacity) = null
+            observers.foreach(observer => observer.capacityIsAvailable())
+            return true
+          }
+        }
+        return false
       }
+      else{
+        for(lot <- 0 until parkingLot){
+          for(capacity <- 0 until totalCapacity){
+            if(vehicle.equals(parkingLotArray(lot)(capacity))){
+              parkingLotArray(lot)(capacity) = null
+              observers.foreach(observer => observer.capacityIsAvailable())
+              return true
+            }
+          }
+        }
+      }
+//      if(this.vehicles.contains(vehicle))
+//      {
+//        this.vehicles -= vehicle
+//        observers.foreach(observer => observer.capacityIsAvailable())
+//        return true
+//      }
       false
     }
     catch {
