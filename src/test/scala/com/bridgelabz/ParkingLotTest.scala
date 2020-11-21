@@ -160,4 +160,10 @@ class ParkingLotTest extends FunSuite
     parkingLot.park(vehicle)
     assert(parkingLot.timingOfParking != "")
   }
+  // UC9
+  test("givenVehicleWhenParkedShouldBeEvenlyDistributedReturnSlot"){
+    val parkingLot = new ParkingLotSystem(2,2)
+    val vehicle = new Object()
+    assert(parkingLot.park(vehicle) == true)
+  }
 }
