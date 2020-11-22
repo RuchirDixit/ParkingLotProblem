@@ -180,7 +180,7 @@ class ParkingLotTest extends FunSuite
     assert(status == true)
   }
   // UC12
-  test("givenWhiteVehicleReturnLotWhereFound"){
+  test("givenWhiteVehicleShouldReturnLotWhereFound"){
     val parkingLot = new ParkingLotSystem(2,1)
     val vehicle = new Vehicle("MH12 AA0000","White","Toyota")
     parkingLot.park(vehicle,"normal")
@@ -190,13 +190,23 @@ class ParkingLotTest extends FunSuite
     assert(lot == 1)
   }
   // UC13
-  test("givenWhiteVehicleReturnLotWhereFound343"){
+  test("givenWhiteVehicleWithBrandToyotaShouldReturnLotWhereFound"){
     val parkingLot = new ParkingLotSystem(2,1)
     val vehicle = new Vehicle("MH12 AA0000","White","Toyota")
     parkingLot.park(vehicle,"normal")
     val vehicle2 = new Vehicle("MH12 ZZ9999","Black","BMW")
     parkingLot.park(vehicle2,"normal")
     val lot = parkingLot.getVehicleLocation("White","Toyota")
+    assert(lot == 1)
+  }
+  // UC 14
+  test("givenVehiclesWithBMWShouldReturnTrue"){
+    val parkingLot = new ParkingLotSystem(2,1)
+    val vehicle = new Vehicle("MH12 AA0000","White","Toyota")
+    parkingLot.park(vehicle,"normal")
+    val vehicle2 = new Vehicle("MH12 ZZ9999","Black","BMW")
+    parkingLot.park(vehicle2,"normal")
+    val lot = parkingLot.getVehicleWithBrand("BMW")
     assert(lot == 1)
   }
 
