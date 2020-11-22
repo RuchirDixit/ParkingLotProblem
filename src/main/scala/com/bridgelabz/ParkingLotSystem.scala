@@ -8,13 +8,13 @@ import scala.collection.mutable.ListBuffer
 class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
 {
   // ListBuffer to store vehicles in parking lot
-  var vehicles = new ListBuffer[Object]
+  var vehicles = new ListBuffer[Vehicle]
   var observers = new ListBuffer[ParkingLotObserver]
   var totalCapacity = parkingLotCapacity
-  var parkingLotMap = Map[Int,Int]()
+  var parkingLotMap :Map[Int,Int] = Map(0->0)
   var timingOfParking = ""
   var lotSize = 0
-  var parkingLotArray = Array.ofDim[Object](parkingLot,totalCapacity)
+  var parkingLotArray = Array.ofDim[Vehicle](parkingLot,totalCapacity)
   /**
    *
    * @param capacity : Set total capacity of parking lot
@@ -42,7 +42,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
    * @return : Boolean value if parked then true, else false
    */
     @throws(classOf[ParkingLotException])
-  def park(vehicle : Object,driverType: String,vehicleType:String*): Boolean =
+  def park(vehicle : Vehicle,driverType: String,vehicleType:String*): Boolean =
     {
       try {
         getTimeOfPark()
@@ -159,7 +159,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
    * @param vehicle : Vehicle to be parked
    * @return : True if vehicle is already parked, else returns false
    */
-  def isVehicleParked(vehicle: Object): Boolean = {
+  def isVehicleParked(vehicle: Vehicle): Boolean = {
     for(lot <- 0 until parkingLot){
       for(capacity <- 0 until totalCapacity){
         if(vehicle.equals(parkingLotArray(lot)(capacity))){
@@ -175,7 +175,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
    * @param vehicle : Vehicle to unpark
    * @return : return true if vehicle unparked, else false
    */
-  def unPark(vehicle : Object) : Boolean = {
+  def unPark(vehicle : Vehicle) : Boolean = {
     try{
       if(vehicle == null) return false
       if(parkingLot == 0){
@@ -200,12 +200,6 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
           }
         }
       }
-//      if(this.vehicles.contains(vehicle))
-//      {
-//        this.vehicles -= vehicle
-//        observers.foreach(observer => observer.capacityIsAvailable())
-//        return true
-//      }
       false
     }
     catch {
@@ -216,6 +210,28 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       case ex: Exception => {
         println(ex.getMessage())
         false
+      }
+    }
+  }
+  def getVehicleLocation(colour: String,brand:String*): Int = {
+    try {
+      for(lot <- 0 until parkingLot){
+        for(capacity <- 0 until totalCapacity){
+          if(colour.equals(parkingLotArray(lot)(capacity).vehicleColour) && brand.equals(parkingLotArray(lot)(capacity).vehicleBrand) ){
+            return lot
+          }
+        }
+      }
+      -1
+    }
+    catch {
+      case nullPointerException: NullPointerException => {
+        println("1")
+        1
+      }
+      case exception: Exception => {
+        println(exception.getMessage)
+        1
       }
     }
   }
