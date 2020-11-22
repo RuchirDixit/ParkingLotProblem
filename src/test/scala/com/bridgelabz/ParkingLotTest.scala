@@ -9,7 +9,7 @@ class ParkingLotTest extends FunSuite
   test("givenAVehicleWhenParkedShouldReturnTrue"){
     try {
       val parkingLot = new ParkingLotSystem(1)
-      val vehicle = new Object()
+      val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isParked = parkingLot.isVehicleParked(vehicle)
       assert(isParked == true)
@@ -25,7 +25,7 @@ class ParkingLotTest extends FunSuite
   test("givenVehicleWhenUnParkedShouldReturnTrue") {
     try {
       val parkingLot = new ParkingLotSystem(1)
-      val vehicle = new Object()
+      val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isUnParked = parkingLot.unPark(vehicle)
       assert(isUnParked == true)
@@ -39,7 +39,7 @@ class ParkingLotTest extends FunSuite
   test("givenAVehicleWhenAlreadyParkedShouldReturnFalse"){
     try {
       val parkingLot = new ParkingLotSystem(1)
-      val vehicle = new Object()
+      val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
     }
     catch {
@@ -55,9 +55,9 @@ class ParkingLotTest extends FunSuite
     val parkingLot = new ParkingLotSystem(1)
     parkingLot.registerParkingLotObserver(owner)
     try{
-      val vehicle = new Object()
+      val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
-      parkingLot.park(new Object(),"normal")
+      parkingLot.park(new Vehicle("","",""),"normal")
     }
     catch {
       case ex : ParkingLotException => {
@@ -73,8 +73,8 @@ class ParkingLotTest extends FunSuite
     parkingLot.setCapacity(2)
     try
       {
-      val vehicle = new Object()
-        val vehicle2 = new Object()
+        val vehicle = new Vehicle("","","")
+        val vehicle2 = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       parkingLot.park(vehicle2,"normal")
         val isParked1 = parkingLot.isVehicleParked(vehicle)
@@ -93,9 +93,9 @@ class ParkingLotTest extends FunSuite
     val parkingLot = new ParkingLotSystem(1,1)
     parkingLot.registerParkingLotObserver(airport)
     try{
-      val vehicle = new Object()
+      val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
-      parkingLot.park(new Object(),"normal")
+      parkingLot.park(new Vehicle("","",""),"normal")
     }
     catch {
       case ex : ParkingLotException => {
@@ -112,8 +112,8 @@ class ParkingLotTest extends FunSuite
     val parkingLot = new ParkingLotSystem(1,1)
     parkingLot.registerParkingLotObserver(owner)
     parkingLot.setCapacity(2)
-    val vehicle = new Object()
-    val vehicle2 = new Object()
+    val vehicle = new Vehicle("","","")
+    val vehicle2 = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
     parkingLot.park(vehicle2,"normal")
     parkingLot.unPark(vehicle)
@@ -130,8 +130,8 @@ class ParkingLotTest extends FunSuite
   // If asked to park at place where already vehicle parked
   test("givenParkingLotWhenAskedWhereToParkAndIfAlreadyParkingFullOrParkedShouldReturnFalse"){
     val parkingLot = new ParkingLotSystem(2,1)
-    val vehicle = new Object()
-    val vehicle2 = new Object()
+    val vehicle = new Vehicle("","","")
+    val vehicle2 = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
     parkingLot.park(vehicle2,"normal")
     val status =  parkingLot.parkAtSlot(1)
@@ -140,7 +140,7 @@ class ParkingLotTest extends FunSuite
   // UC7 : Find vehicle
   test("givenVehicleIfFoundShouldReturnTrue"){
     val parkingLot = new ParkingLotSystem(2,1)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
     val vehicleFound = parkingLot.isVehicleParked(vehicle)
     assert(vehicleFound == true)
@@ -148,36 +148,56 @@ class ParkingLotTest extends FunSuite
   // If vehicle not found
   test("givenVehicleIfNotFoundShouldReturnFalse"){
     val parkingLot = new ParkingLotSystem(2)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
-    val vehicleFound = parkingLot.isVehicleParked(new Object())
+    val vehicleFound = parkingLot.isVehicleParked(new Vehicle("","",""))
     assert(vehicleFound == false)
   }
   // UC8
   test("givenVehicleWhenParkedShouldReturnTime"){
     val parkingLot = new ParkingLotSystem(2)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
     assert(parkingLot.timingOfParking != "")
   }
   // UC9
   test("givenVehicleWhenParkedShouldBeEvenlyDistributedReturnTrue"){
     val parkingLot = new ParkingLotSystem(2,2)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     assert(parkingLot.park(vehicle,"normal") == true)
   }
   // UC10
   test("givenVehicleWithHandicapDriverFindNearestSpotAndReturnTrue"){
     val parkingLot = new ParkingLotSystem(2,2)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     assert(parkingLot.park(vehicle,"Handicap") == true)
   }
   // UC11
   test("givenLargeVehicleFindSpotWithMoreSpaceAndReturnTrue"){
     val parkingLot = new ParkingLotSystem(2,2)
-    val vehicle = new Object()
+    val vehicle = new Vehicle("","","")
     val status = parkingLot.park(vehicle,"normal","Large")
     assert(status == true)
+  }
+  // UC12
+  test("givenWhiteVehicleReturnLotWhereFound"){
+    val parkingLot = new ParkingLotSystem(2,1)
+    val vehicle = new Vehicle("MH12 AA0000","White","Toyota")
+    parkingLot.park(vehicle,"normal")
+    val vehicle2 = new Vehicle("MH12 ZZ9999","Black","BMW")
+    parkingLot.park(vehicle2,"normal")
+    val lot = parkingLot.getVehicleLocation("White")
+    assert(lot == 1)
+  }
+  // UC13
+  test("givenWhiteVehicleReturnLotWhereFound343"){
+    val parkingLot = new ParkingLotSystem(2,1)
+    val vehicle = new Vehicle("MH12 AA0000","White","Toyota")
+    parkingLot.park(vehicle,"normal")
+    val vehicle2 = new Vehicle("MH12 ZZ9999","Black","BMW")
+    parkingLot.park(vehicle2,"normal")
+    val lot = parkingLot.getVehicleLocation("White","Toyota")
+    assert(lot == 1)
   }
 
 }
