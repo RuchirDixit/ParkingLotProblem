@@ -210,4 +210,14 @@ class ParkingLotTest extends FunSuite
     assert(lot == 1)
   }
 
+  // UC 15
+  test("givenVehiclesParkedBefore30MinsShouldReturnCount"){
+    val parkingLot = new ParkingLotSystem(2,1)
+    val vehicle = new Vehicle("MH12 AA0000","White","Toyota",parkingLot.getTimeOfPark())
+    parkingLot.park(vehicle,"normal")
+    val vehicle2 = new Vehicle("MH12 ZZ9999","Black","BMW",parkingLot.getTimeOfPark())
+    parkingLot.park(vehicle2,"normal")
+    val lot = parkingLot.getVehicleParked30minsBefore()
+    assert(lot == 1)
+  }
 }
