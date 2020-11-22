@@ -146,13 +146,14 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
           }
         }
   }
-  def getTimeOfPark() : Unit = {
+  def getTimeOfPark() : String = {
     val calender = Calendar.getInstance();
     val hour = new SimpleDateFormat("hh");
     val hours = hour.format(calender.getTime());
     val min = new SimpleDateFormat("mm");
     val minutes = min.format(calender.getTime());
     timingOfParking = hour + "" + minutes
+    timingOfParking
   }
   /**
    *
@@ -254,6 +255,55 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
         }
       }
       -1
+    }
+    catch {
+      case _: NullPointerException => {
+        println("1")
+        1
+      }
+      case exception: Exception => {
+        println(exception.getMessage)
+        1
+      }
+    }
+  }
+  def getDriverTypeLocation(driverType: String,lot:Int) = {
+    try {
+      var count = 0
+      if(driverType.equals("handicap")){
+        for(lot <- 0 until parkingLot){
+          for(_ <- 0 until totalCapacity) {
+            if(lot == lot)
+              count += 1
+          }
+        }
+      }
+      1
+    }
+    catch {
+      case _: NullPointerException => {
+        println("1")
+        1
+      }
+      case exception: Exception => {
+        println(exception.getMessage)
+        1
+      }
+    }
+  }
+  def getVehicleParked30minsBefore() = {
+    try {
+      var count = 0
+      for(lot <- 0 until parkingLot){
+        for(capacity <- 0 until totalCapacity){
+          var time = parkingLotArray(lot)(capacity).parkTime(0).toInt
+          time -= 30
+          if(getTimeOfPark() == time){
+            count += 1
+          }
+        }
+      }
+      1
     }
     catch {
       case _: NullPointerException => {
