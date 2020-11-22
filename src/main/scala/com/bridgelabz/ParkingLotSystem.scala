@@ -213,6 +213,13 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       }
     }
   }
+
+  /**
+   *
+   * @param colour : colour of vehicle
+   * @param brand : brand of vehicle
+   * @return : lot where vehicle is present
+   */
   def getVehicleLocation(colour: String,brand:String*): Int = {
     try {
       for(lot <- 0 until parkingLot){
@@ -225,7 +232,31 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       -1
     }
     catch {
-      case nullPointerException: NullPointerException => {
+      case _: NullPointerException => {
+        println("1")
+        1
+      }
+      case exception: Exception => {
+        println(exception.getMessage)
+        1
+      }
+    }
+  }
+  def getVehicleWithBrand(brand:String):Int = {
+    try {
+      var count = 0
+      for(lot <- 0 until parkingLot){
+        for(capacity <- 0 until totalCapacity){
+          if(brand.equals(parkingLotArray(lot)(capacity).vehicleBrand) ){
+            count += 1
+            count
+          }
+        }
+      }
+      -1
+    }
+    catch {
+      case _: NullPointerException => {
         println("1")
         1
       }
