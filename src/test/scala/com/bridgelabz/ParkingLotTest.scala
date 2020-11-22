@@ -172,4 +172,12 @@ class ParkingLotTest extends FunSuite
     val vehicle = new Object()
     assert(parkingLot.park(vehicle,"Handicap") == true)
   }
+  // UC11
+  test("givenLargeVehicleFindSpotWithMoreSpaceAndReturnTrue"){
+    val parkingLot = new ParkingLotSystem(2,2)
+    val vehicle = new Object()
+    val status = parkingLot.park(vehicle,"normal","Large")
+    assert(status == true)
+  }
+
 }
