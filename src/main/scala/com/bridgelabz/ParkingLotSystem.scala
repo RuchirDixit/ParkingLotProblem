@@ -2,7 +2,7 @@ package com.bridgelabz
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
-
+import scala.collection.mutable.Map
 import scala.collection.mutable.ListBuffer
 // Parking Lot class to handle park and unPark
 class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
@@ -11,7 +11,9 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
   var vehicles = new ListBuffer[Object]
   var observers = new ListBuffer[ParkingLotObserver]
   var totalCapacity = parkingLotCapacity
+  var parkingLotMap = Map[Int,Int]()
   var timingOfParking = ""
+  var lotSize = 0
   var parkingLotArray = Array.ofDim[Object](parkingLot,totalCapacity)
   /**
    *
@@ -40,7 +42,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
    * @return : Boolean value if parked then true, else false
    */
     @throws(classOf[ParkingLotException])
-  def park(vehicle : Object,driverType: String): Boolean =
+  def park(vehicle : Object,driverType: String,vehicleType:String*): Boolean =
     {
       try {
         getTimeOfPark()
@@ -67,18 +69,55 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
           {
             for(lot <- 0 to parkingLot-1){
               for(capacity <- 0 to totalCapacity-1){
-                if(parkingLotArray(lot)(capacity)==null){
-                  parkingLotArray(lot)(capacity) = vehicle
-                  return true
-                }
-                else{
-                  if(lot+1 <= parkingLot-1){
-                    if(parkingLotArray(lot+1)(capacity)==null){
+                if(vehicleType(0).equals("Large"))
+                  {
+                    var lotNumber = -1
+                    if(parkingLotMap.size != 0){
+                      parkingLotMap.foreach(value => {
+                        if(lot == value._1)
+                        {
+                          if(value._2 < totalCapacity){
+                            lotNumber = lot
+                          }
+                        }
+                      })
+                      if(parkingLotArray(lotNumber)(capacity)==null){
+                        parkingLotArray(lotNumber)(capacity) = vehicle
+                        parkingLotMap.foreach(i => {
+                          lotSize = i._2
+                          lotSize += 1
+                          parkingLotMap += (lotNumber -> lotSize)
+                        })
+                        return true
+                      }
+                    }
+
+                  }
+                  else
+                  {
+                    if(parkingLotArray(lot)(capacity)==null){
                       parkingLotArray(lot)(capacity) = vehicle
+                      parkingLotMap.foreach(i => {
+                        lotSize = i._2
+                        lotSize += 1
+                        parkingLotMap += (lot -> lotSize)
+                      })
                       return true
                     }
+                    else{
+                      if(lot+1 <= parkingLot-1){
+                        if(parkingLotArray(lot+1)(capacity)==null){
+                          parkingLotArray(lot)(capacity) = vehicle
+                          parkingLotMap.foreach(i => {
+                            lotSize = i._2
+                            lotSize += 1
+                            parkingLotMap += (lot -> lotSize)
+                          })
+                          return true
+                        }
+                      }
+                    }
                   }
-                }
               }
             }
           }
@@ -92,7 +131,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
               }
             }
           }
-          return false
+          return true
           }
         false
       }
