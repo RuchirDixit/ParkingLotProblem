@@ -36,10 +36,14 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
     else if(this.parkingLotArray.size >= slotNumber) false
     else true
   }
+
   /**
    *
-   * @param vehicle : Vehicle to park
-   * @return : Boolean value if parked then true, else false
+   * @param vehicle : vehicle to park
+   * @param driverType : normal or handicap driver
+   * @param vehicleType : large or normal vehicle
+   * @throws com.bridgelabz.ParkingLotException : Exception for vehicle already parked or parking lot full
+   * @return
    */
     @throws(classOf[ParkingLotException])
   def park(vehicle : Vehicle,driverType: String,vehicleType:String*): Boolean =
@@ -67,59 +71,8 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
         else {
           if(driverType.equals("normal"))
           {
-            for(lot <- 0 to parkingLot-1){
-              for(capacity <- 0 to totalCapacity-1){
-                if(vehicleType(0).equals("Large"))
-                  {
-                    var lotNumber = -1
-                    if(parkingLotMap.size != 0){
-                      parkingLotMap.foreach(value => {
-                        if(lot == value._1)
-                        {
-                          if(value._2 < totalCapacity){
-                            lotNumber = lot
-                          }
-                        }
-                      })
-                      if(parkingLotArray(lotNumber)(capacity)==null){
-                        parkingLotArray(lotNumber)(capacity) = vehicle
-                        parkingLotMap.foreach(i => {
-                          lotSize = i._2
-                          lotSize += 1
-                          parkingLotMap += (lotNumber -> lotSize)
-                        })
-                        return true
-                      }
-                    }
-
-                  }
-                  else
-                  {
-                    if(parkingLotArray(lot)(capacity)==null){
-                      parkingLotArray(lot)(capacity) = vehicle
-                      parkingLotMap.foreach(i => {
-                        lotSize = i._2
-                        lotSize += 1
-                        parkingLotMap += (lot -> lotSize)
-                      })
-                      return true
-                    }
-                    else{
-                      if(lot+1 <= parkingLot-1){
-                        if(parkingLotArray(lot+1)(capacity)==null){
-                          parkingLotArray(lot)(capacity) = vehicle
-                          parkingLotMap.foreach(i => {
-                            lotSize = i._2
-                            lotSize += 1
-                            parkingLotMap += (lot -> lotSize)
-                          })
-                          return true
-                        }
-                      }
-                    }
-                  }
-              }
-            }
+            val status = normalDriverType(vehicle,vehicleType(0))
+            return status
           }
           else {
             for (lot <- 0 to parkingLot - 1) {
@@ -145,6 +98,69 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
             false
           }
         }
+  }
+
+  /**
+   *
+   * @param vehicle : Vehicle to park
+   * @param vehicleType : Large or normal vehicle
+   * @return
+   */
+  def normalDriverType(vehicle : Vehicle,vehicleType:String) : Boolean = {
+    for(lot <- 0 to parkingLot-1){
+      for(capacity <- 0 to totalCapacity-1){
+        if(vehicleType.equals("Large"))
+        {
+          var lotNumber = -1
+          if(parkingLotMap.size != 0){
+            parkingLotMap.foreach(value => {
+              if(lot == value._1)
+              {
+                if(value._2 < totalCapacity){
+                  lotNumber = lot
+                }
+              }
+            })
+            if(parkingLotArray(lotNumber)(capacity)==null){
+              parkingLotArray(lotNumber)(capacity) = vehicle
+              parkingLotMap.foreach(i => {
+                lotSize = i._2
+                lotSize += 1
+                parkingLotMap += (lotNumber -> lotSize)
+              })
+              return true
+            }
+          }
+
+        }
+        else
+        {
+          if(parkingLotArray(lot)(capacity)==null){
+            parkingLotArray(lot)(capacity) = vehicle
+            parkingLotMap.foreach(i => {
+              lotSize = i._2
+              lotSize += 1
+              parkingLotMap += (lot -> lotSize)
+            })
+            return true
+          }
+          else{
+            if(lot+1 <= parkingLot-1){
+              if(parkingLotArray(lot+1)(capacity)==null){
+                parkingLotArray(lot)(capacity) = vehicle
+                parkingLotMap.foreach(i => {
+                  lotSize = i._2
+                  lotSize += 1
+                  parkingLotMap += (lot -> lotSize)
+                })
+                return true
+              }
+            }
+          }
+        }
+      }
+    }
+    false
   }
   def getTimeOfPark() : String = {
     val calender = Calendar.getInstance();
@@ -243,6 +259,12 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       }
     }
   }
+
+  /**
+   *
+   * @param brand : Brand to search vehicle
+   * @return : count of vehicles found
+   */
   def getVehicleWithBrand(brand:String):Int = {
     try {
       var count = 0
@@ -267,6 +289,13 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       }
     }
   }
+
+  /**
+   *
+   * @param driverType : normal or handicap
+   * @param lot : location where we need to search
+   * @return : count of vehicle found
+   */
   def getDriverTypeLocation(driverType: String,lot:Int) = {
     try {
       var count = 0
@@ -275,6 +304,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
           for(_ <- 0 until totalCapacity) {
             if(lot == lot)
               count += 1
+            count
           }
         }
       }
@@ -291,6 +321,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
       }
     }
   }
+  // Returns vehicle parked in last 30 mins
   def getVehicleParked30minsBefore() = {
     try {
       var count = 0
@@ -298,7 +329,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0)
         for(capacity <- 0 until totalCapacity){
           var time = parkingLotArray(lot)(capacity).parkTime(0).toInt
           time -= 30
-          if(getTimeOfPark() == time){
+          if(getTimeOfPark() == time.toString){
             count += 1
           }
         }
