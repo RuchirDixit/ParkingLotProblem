@@ -7,32 +7,20 @@ class ParkingLotTest extends FunSuite
 
   // UC1 : To Park car
   test("givenAVehicleWhenParkedShouldReturnTrue"){
-    try {
       val parkingLot = new ParkingLotSystem(1)
       val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isParked = parkingLot.isVehicleParked(vehicle)
       assert(isParked == true)
-    }
-   catch {
-     case _ : Exception => {
-       println("Parking Lot exception")
-     }
-   }
   }
 
  // UC2 : To unPark
   test("givenVehicleWhenUnParkedShouldReturnTrue") {
-    try {
       val parkingLot = new ParkingLotSystem(1)
       val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isUnParked = parkingLot.unPark(vehicle)
       assert(isUnParked == true)
-    }
-    catch {
-      case _: Exception => {}
-    }
   }
 
   // To check id car is already parked throw exception
@@ -71,22 +59,15 @@ class ParkingLotTest extends FunSuite
   test("givenCapacityIs2ShouldBeAbleToParkTwoVehicles"){
     val parkingLot = new ParkingLotSystem(1,1)
     parkingLot.setCapacity(2)
-    try
-      {
-        val vehicle = new Vehicle("","","")
-        val vehicle2 = new Vehicle("","","")
-      parkingLot.park(vehicle,"normal")
-      parkingLot.park(vehicle2,"normal")
-        val isParked1 = parkingLot.isVehicleParked(vehicle)
-        val isParked2 = parkingLot.isVehicleParked(vehicle2)
-        assert(isParked1 == true && isParked2 == true)
-    }
-    catch {
-      case ex : ParkingLotException => {
-        println(ex.getMessage())
-      }
-    }
+    val vehicle = new Vehicle("","","")
+    val vehicle2 = new Vehicle("","","")
+    parkingLot.park(vehicle,"normal")
+    parkingLot.park(vehicle2,"normal")
+    val isParked1 = parkingLot.isVehicleParked(vehicle)
+    val isParked2 = parkingLot.isVehicleParked(vehicle2)
+    assert(isParked1 == true && isParked2 == true)
   }
+
   // UC4: Inform Airport security
   test("givenWhenParkingLotIsFullShouldInformAirportSecurity"){
     val airport = new AirportSecurity()
