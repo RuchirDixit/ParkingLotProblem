@@ -1,8 +1,9 @@
 package com.bridgelabz
-
-import org.scalatest.FunSuite
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.{BeforeAndAfter, FunSuite}
+import org.mockito.Mockito._
 // test class
-class ParkingLotTest extends FunSuite
+class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar
 {
 
   // UC1 : To Park car
@@ -39,19 +40,12 @@ class ParkingLotTest extends FunSuite
 
   // UC3 : Inform owner on parking lot full
   test("givenWhenParkingLotIsFullShouldInformOwner"){
-    val owner = new ParkingLotOwner()
+    val owner = new ParkingLotOwner() // mock
     val parkingLot = new ParkingLotSystem(1)
     parkingLot.registerParkingLotObserver(owner)
-    try{
-      val vehicle = new Vehicle("","","")
-      parkingLot.park(vehicle,"normal")
-      parkingLot.park(new Vehicle("","",""),"normal")
-    }
-    catch {
-      case ex : ParkingLotException => {
-        println(ex.getMessage())
-      }
-    }
+    val vehicle = new Vehicle("","","")
+    parkingLot.park(vehicle,"normal")
+    parkingLot.park(new Vehicle("","",""),"normal")
     val capacity = owner.isCapacityFull()
     assert(capacity == true)
   }
@@ -210,5 +204,18 @@ class ParkingLotTest extends FunSuite
     parkingLot.park(vehicle2,"handicap")
     val lot = parkingLot.getDriverTypeLocation("handicap",1)
     assert(lot == 1)
+  }
+
+
+  // Mock test case
+  test("givenWhenParkingUsingMockitoIsFullShouldInformOwner"){
+    val service = mock[ParkingLotOwner]
+    when(service.isCapacityFull()).thenReturn(true)
+    val parkingLot = new ParkingLotSystem(1)
+    val vehicle = new Vehicle("","","")
+    parkingLot.park(vehicle,"normal")
+    parkingLot.park(new Vehicle("","",""),"normal")
+    val capacity = service.isCapacityFull()
+    assert(capacity == true)
   }
 }
