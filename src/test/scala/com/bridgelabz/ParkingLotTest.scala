@@ -1,9 +1,26 @@
+// Copyright (C) 2011-2012 the original author or authors.
+// See the LICENCE.txt file distributed with this work for additional
+// information regarding copyright ownership.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 package com.bridgelabz
+
+import com.typesafe.scalalogging.LazyLogging
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSuite}
 import org.mockito.Mockito._
 // test class
-class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar
+class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with LazyLogging
 {
 
   // UC1 : To Park car
@@ -34,6 +51,9 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar
     catch {
       case parkingLotException : ParkingLotException => {
         assert(parkingLotException.getMessage.equals("Parking Lot Full"))
+      }
+      case exception: Exception => {
+        logger.error(exception.toString)
       }
     }
   }
@@ -75,6 +95,9 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar
     catch {
       case ex : ParkingLotException => {
         println(ex.getMessage())
+      }
+      case exception: Exception => {
+        logger.error(exception.toString)
       }
     }
     val isCapacityFull = airport.isCapacityFull()
