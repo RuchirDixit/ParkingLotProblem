@@ -17,5 +17,5 @@ package com.bridgelabz
 
 trait ParkingLotObserver {
   def capacityIsFull()
-  def capacityIsAvailable()
+  def capacityIsAvailable() : Boolean
 }
