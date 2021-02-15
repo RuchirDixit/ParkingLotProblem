@@ -25,9 +25,11 @@ class AirportSecurity extends ParkingLotObserver with LazyLogging{
     isFullCapacity = true
   }
   // sets full capacity to false when car unparked
-  override def capacityIsAvailable(): Unit = {
+  // $COVERAGE-OFF$
+  override def capacityIsAvailable(): Boolean = {
     logger.info("Parking lot available")
     isFullCapacity = false
+    false
   }
   // returns whether capacity of parking lot is full ot not
   def isCapacityFull(): Boolean = {
