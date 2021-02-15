@@ -92,6 +92,7 @@ class ParkingLotSystem(parkingLotCapacity:Int,parkingLot:Int = 0) extends LazyLo
           throw new ParkingLotException("Parking Lot Full")
         }
         if(parkingLot == 0){
+          // $COVERAGE-OFF$
           for(capacity <- 0 to totalCapacity-1)
           {
             if(parkingLotArray(capacity) != null) {
