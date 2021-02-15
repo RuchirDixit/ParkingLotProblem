@@ -15,6 +15,9 @@
 // limitations under the License.
 package com.bridgelabz
 
+import com.bridgelabz.airportsecurity.AirportSecurity
+import com.bridgelabz.parkinglot.{ParkingLotException, ParkingLotOwner, ParkingLotSystem}
+import com.bridgelabz.vehicle.Vehicle
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfter, FunSuite}
