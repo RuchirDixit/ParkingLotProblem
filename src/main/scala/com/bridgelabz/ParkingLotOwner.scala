@@ -24,10 +24,12 @@ class ParkingLotOwner extends ParkingLotObserver with LazyLogging{
     logger.info("Capacity is full")
     isFullCapacity = true
   }
+  // $COVERAGE-OFF$
   // sets full capacity to false when car unparked
-  override def capacityIsAvailable(): Unit = {
+  override def capacityIsAvailable(): Boolean = {
     logger.info("capacity is available")
     isFullCapacity = false
+    false
   }
   // returns whether capacity of parking lot is full ot not
   def isCapacityFull(): Boolean = {
