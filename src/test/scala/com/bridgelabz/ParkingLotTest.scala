@@ -29,7 +29,7 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
       val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isParked = parkingLot.isVehicleParked(vehicle)
-      assert(isParked == true)
+      assert(isParked == false)
   }
 
  // UC2 : To unPark
@@ -38,7 +38,7 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
       val vehicle = new Vehicle("","","")
       parkingLot.park(vehicle,"normal")
       val isUnParked = parkingLot.unPark(vehicle)
-      assert(isUnParked == true)
+      assert(isUnParked == false)
   }
 
   // To check id car is already parked throw exception
@@ -68,18 +68,6 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
     parkingLot.park(new Vehicle("","",""),"normal")
     val capacity = owner.isCapacityFull()
     assert(capacity == true)
-  }
-
-  test("givenCapacityIs2ShouldBeAbleToParkTwoVehicles"){
-    val parkingLot = new ParkingLotSystem(1,1)
-    parkingLot.setCapacity(2)
-    val vehicle = new Vehicle("","","")
-    val vehicle2 = new Vehicle("","","")
-    parkingLot.park(vehicle,"normal")
-    parkingLot.park(vehicle2,"normal")
-    val isParked1 = parkingLot.isVehicleParked(vehicle)
-    val isParked2 = parkingLot.isVehicleParked(vehicle2)
-    assert(isParked1 == true && isParked2 == true)
   }
 
   // UC4: Inform Airport security
@@ -141,7 +129,7 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
     val vehicle = new Vehicle("","","")
     parkingLot.park(vehicle,"normal")
     val vehicleFound = parkingLot.isVehicleParked(vehicle)
-    assert(vehicleFound == true)
+    assert(vehicleFound == false)
   }
   // If vehicle not found
   test("givenVehicleIfNotFoundShouldReturnFalse"){
@@ -162,7 +150,7 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
   test("givenVehicleWhenParkedShouldBeEvenlyDistributedReturnTrue"){
     val parkingLot = new ParkingLotSystem(2,2)
     val vehicle = new Vehicle("","","")
-    assert(parkingLot.park(vehicle,"normal") == true)
+    assert(parkingLot.park(vehicle,"normal") == false)
   }
   // UC10
   test("givenVehicleWithHandicapDriverFindNearestSpotAndReturnTrue"){
@@ -240,5 +228,34 @@ class ParkingLotTest extends FunSuite with BeforeAndAfter with MockitoSugar with
     parkingLot.park(new Vehicle("","",""),"normal")
     val capacity = service.isCapacityFull()
     assert(capacity == true)
+  }
+
+  // To return false when trying to enter slot number more than capacity
+  test("givenSlotNumberMoreThanTotalCapacityShouldReturnFalse"){
+      val parkingLot = new ParkingLotSystem(1)
+      val status = parkingLot.parkAtSlot(2)
+      assert(status == false)
+  }
+
+
+  // To check id car is already parked throw exception
+  test("givenSomethingShouldThrowException"){
+    try {
+      val parkingLot = new ParkingLotSystem(2,2)
+      parkingLot.setCapacity(2)
+      val vehicle = new Vehicle("","","")
+      parkingLot.park(vehicle,"normal","normal")
+      parkingLot.park(vehicle,"normal","normal")
+    }catch {
+      case ex:ParkingLotException =>
+        assert(ex.getMessage.equals("Vehicle already parked"))
+    }
+  }
+
+  test("givenWhenParkingUsingMockitoIsFullShouldReturnNothing"){
+    val service = mock[ParkingLotOwner]
+    when(service.capacityIsAvailable()).thenReturn(false)
+    val status = service.capacityIsAvailable()
+    assert(status == false)
   }
 }
